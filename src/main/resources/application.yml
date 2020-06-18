@@ -1,0 +1,16 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb1
+    username: scott
+    password: tiger
+  h2:
+    console:
+      enabled: true
+logging:
+  level:
+    root: info
+  com:
+    cht:
+      springboot:
+        demo:
+          Demo6JDBC: debug
