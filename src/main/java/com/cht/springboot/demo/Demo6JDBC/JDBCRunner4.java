@@ -11,6 +11,8 @@ import org.springframework.stereotype.Component;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Component
@@ -27,7 +29,7 @@ public class JDBCRunner4 implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         createTable();
-        insertTableData();
+        insertTableData2();
         querySomeData();
         queryDataByUsername();
     }
@@ -45,7 +47,21 @@ public class JDBCRunner4 implements CommandLineRunner {
         jdbcTemplate.query(QUERY_USERS, (rs, rowNum) -> new User(rs.getString("USERNAME"),
                 rs.getString("HASHPASSWORD"))).forEach(user -> LOGGER.info(user.toString()));
     }
-
+    private void insertTableData2() {
+        List<Object[]> splitUpName = Arrays.asList("Mark password1", "John password2", "Ken password3", "Tim password4")
+                .stream().map(new Function<String, String[]>() {
+                    @Override
+                    public String[] apply(String s) {
+                        return s.split(" ");
+                    }
+                }).collect(Collectors.toList());
+        splitUpName.forEach(new Consumer<Object[]>() {
+            @Override
+            public void accept(Object[] userPasswordPair) {
+                LOGGER.info("user={}, hashed password={}", userPasswordPair[0], userPasswordPair[1]);
+            }
+        });
+    }
     private void insertTableData() {
         List<Object[]> splitUpName = Arrays.asList("Mark password1", "John password2", "Ken password3", "Tim password4")
                 .stream().map(userPasswordString-> userPasswordString.split(" "))
